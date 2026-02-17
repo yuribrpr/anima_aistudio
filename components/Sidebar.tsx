@@ -1,16 +1,22 @@
 
 import React from 'react';
-import { Dna, LogOut, Settings, LayoutGrid } from 'lucide-react';
+import { Dna, LogOut, Settings, LayoutGrid, Egg, Crown } from 'lucide-react';
+import { ViewState } from '../types';
 
 interface SidebarProps {
+  currentView: ViewState;
+  onNavigate: (view: ViewState) => void;
   onLogout: () => void;
+  userEmail?: string;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate, onLogout, userEmail }) => {
   const navItems = [
-    { name: 'Visão Geral', icon: LayoutGrid, active: false },
-    { name: 'Animas', icon: Dna, active: true },
-    { name: 'Configurações', icon: Settings, active: false },
+    // { name: 'Visão Geral', icon: LayoutGrid, id: 'overview' }, // Desativado por enquanto
+    { name: 'Meus Animas', icon: Crown, id: 'my-animas' },
+    { name: 'Centro de Adoção', icon: Egg, id: 'adoption' },
+    { name: 'Biblioteca (Admin)', icon: Dna, id: 'library' },
+    // { name: 'Configurações', icon: Settings, id: 'settings' },
   ];
 
   return (
@@ -28,14 +34,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
         <nav className="space-y-1">
           {navItems.map((item) => (
             <button
-              key={item.name}
+              key={item.id}
+              onClick={() => onNavigate(item.id as ViewState)}
               className={`w-full flex items-center gap-2 px-4 py-2 text-sm rounded-md transition-all ${
-                item.active 
-                  ? 'bg-zinc-900 text-white font-medium' 
+                currentView === item.id 
+                  ? 'bg-zinc-900 text-white font-medium shadow-sm ring-1 ring-zinc-800' 
                   : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50'
               }`}
             >
-              <item.icon className={`w-4 h-4 ${item.active ? 'text-white' : 'text-zinc-500'}`} />
+              <item.icon className={`w-4 h-4 ${currentView === item.id ? 'text-white' : 'text-zinc-500'}`} />
               {item.name}
             </button>
           ))}
@@ -44,17 +51,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
 
       <div className="mt-auto p-6 border-t border-zinc-800">
         <div className="flex items-center gap-3 mb-4 px-2">
-           <div className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700"></div>
-           <div className="flex flex-col">
-             <span className="text-xs font-medium text-white">Admin User</span>
-             <span className="text-[10px] text-zinc-500">admin@nexus.com</span>
+           <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 border border-zinc-700 flex items-center justify-center text-xs font-bold text-white">
+             {userEmail ? userEmail[0].toUpperCase() : 'U'}
+           </div>
+           <div className="flex flex-col overflow-hidden">
+             <span className="text-xs font-medium text-white truncate max-w-[120px]">Usuário</span>
+             <span className="text-[10px] text-zinc-500 truncate max-w-[120px]">{userEmail}</span>
            </div>
         </div>
         <button
           onClick={onLogout}
-          className="w-full flex items-center gap-2 px-2 py-1.5 text-zinc-500 hover:text-red-400 transition-colors text-xs font-medium"
+          className="w-full flex items-center gap-2 px-2 py-1.5 text-zinc-500 hover:text-red-400 transition-colors text-xs font-medium group"
         >
-          <LogOut className="w-3.5 h-3.5" />
+          <LogOut className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
           Sair da conta
         </button>
       </div>

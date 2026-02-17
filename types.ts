@@ -35,9 +35,30 @@ export interface Anima {
   };
 }
 
+export interface UserAnima {
+  id: string;
+  user_id: string;
+  anima_id: string;
+  nickname?: string;
+  is_active: boolean;
+  current_exp: number;
+  
+  // Atributos Extras (IVs/EVs)
+  attack_extra: number;
+  defense_extra: number;
+  max_health_extra: number;
+  
+  created_at: string;
+  
+  // Join
+  anima?: Anima;
+}
+
 export interface Activity {
   id: string;
   type: 'login' | 'update' | 'action' | 'alert';
   message: string;
   timestamp: string;
 }
+
+export type ViewState = 'overview' | 'library' | 'adoption' | 'my-animas' | 'settings';
