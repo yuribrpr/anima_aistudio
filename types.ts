@@ -8,6 +8,13 @@ export interface User {
   createdAt: string;
 }
 
+export interface UserProfile {
+  id: string; // References auth.users
+  bits: number;
+  manager_exp: number;
+  created_at: string;
+}
+
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
@@ -33,6 +40,22 @@ export interface Anima {
     species: string;
     image_data: string;
   };
+}
+
+export interface Enemy {
+  id: string;
+  species: string;
+  image_data: string;
+  level: string; // 'Easy', 'Medium', 'Hard', 'Boss'
+  attack: number;
+  defense: number;
+  max_health: number;
+  attack_speed: number;
+  critical_chance: number;
+  
+  // Recompensas
+  reward_exp: number;
+  reward_bits: number;
 }
 
 export interface UserAnima {
@@ -61,4 +84,4 @@ export interface Activity {
   timestamp: string;
 }
 
-export type ViewState = 'overview' | 'library' | 'adoption' | 'my-animas' | 'settings';
+export type ViewState = 'overview' | 'library' | 'enemies' | 'adoption' | 'my-animas' | 'settings';

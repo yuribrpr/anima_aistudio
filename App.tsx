@@ -1,8 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { AuthPage } from './components/AuthPage';
 import { AnimaLibrary } from './components/AnimaLibrary';
 import { AdoptionCenter } from './components/AdoptionCenter';
 import { MyAnimas } from './components/MyAnimas';
+import { EnemyLibrary } from './components/EnemyLibrary';
+import { Dashboard } from './components/Dashboard';
 import { Sidebar } from './components/Sidebar';
 import { User, AuthState, ViewState } from './types';
 import { supabase } from './lib/supabase';
@@ -14,7 +17,7 @@ const App: React.FC = () => {
     isLoading: true,
   });
 
-  const [currentView, setCurrentView] = useState<ViewState>('my-animas');
+  const [currentView, setCurrentView] = useState<ViewState>('overview');
 
   useEffect(() => {
     // Verificar sessão atual
@@ -82,14 +85,22 @@ const App: React.FC = () => {
     if (!authState.user) return null;
 
     switch (currentView) {
+      case 'overview':
+        return (
+          <div className="flex min-h-screen bg-black text-zinc-50 font-sans selection:bg-zinc-800">
+             <Sidebar 
+               currentView={currentView} 
+               onNavigate={setCurrentView} 
+               onLogout={handleLogout} 
+               userEmail={authState.user.email}
+             />
+             <main className="flex-1 overflow-y-auto max-h-screen bg-black">
+                 <Dashboard user={authState.user} />
+             </main>
+          </div>
+        );
+
       case 'library':
-        // A biblioteca usa seu proprio sidebar internamente no código antigo, vamos refatorar para usar o layout global aqui
-        // Para manter compatibilidade com o codigo anterior da AnimaLibrary que tinha Sidebar embutida,
-        // renderizamos ela sem a Sidebar aqui se a prop 'user' for passada, ou ajustamos o componente AnimaLibrary.
-        // Como o componente AnimaLibrary já tem a Sidebar hardcoded no arquivo anterior, 
-        // vamos usá-lo como "Pagina inteira" por enquanto, mas o ideal seria refatorar.
-        // HACK: Renderizar AnimaLibrary que já contém a Sidebar, mas passando uma prop dummy se precisar.
-        // Para consistência com as novas telas, vamos renderizar o layout aqui.
         return (
           <div className="flex min-h-screen bg-black text-zinc-50 font-sans selection:bg-zinc-800">
              <Sidebar 
@@ -99,13 +110,23 @@ const App: React.FC = () => {
                userEmail={authState.user.email}
              />
              <div className="flex-1 overflow-y-auto max-h-screen">
-                {/* Precisamos ajustar AnimaLibrary para não renderizar a Sidebar duplicada se possivel, 
-                    ou aceitar que por enquanto ela tem a sidebar dela. 
-                    Vou ajustar AnimaLibrary abaixo para aceitar uma prop 'standalone' ou similar.
-                    Mas para simplificar sem mudar tudo, vou renderizar o conteúdo da Library envelopado.
-                 */}
                  <AnimaLibraryWrapper user={authState.user} onLogout={handleLogout} />
              </div>
+          </div>
+        );
+
+      case 'enemies':
+        return (
+          <div className="flex min-h-screen bg-black text-zinc-50 font-sans selection:bg-zinc-800">
+            <Sidebar 
+               currentView={currentView} 
+               onNavigate={setCurrentView} 
+               onLogout={handleLogout} 
+               userEmail={authState.user.email}
+             />
+            <main className="flex-1 overflow-y-auto max-h-screen bg-black">
+              <EnemyLibrary />
+            </main>
           </div>
         );
       
@@ -153,12 +174,8 @@ const App: React.FC = () => {
   );
 };
 
-// Wrapper temporário para reutilizar a lógica da Library mas remover a Sidebar duplicada visualmente 
-// (Isso exigiria mudar o AnimaLibrary.tsx para aceitar não renderizar Sidebar, farei essa mudança no arquivo AnimaLibrary)
-
+// Wrapper temporário
 const AnimaLibraryWrapper = ({ user, onLogout }: { user: User, onLogout: () => void }) => {
-  // Este componente existe apenas para satisfazer a estrutura do switch case
-  // A AnimaLibrary original será modificada para não renderizar a sidebar se estiver em modo 'embedded'
   return <AnimaLibrary user={user} onLogout={onLogout} embedded={true} />;
 };
 

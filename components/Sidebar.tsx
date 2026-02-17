@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Dna, LogOut, Settings, LayoutGrid, Egg, Crown } from 'lucide-react';
+import { Dna, LogOut, Settings, LayoutGrid, Egg, Crown, Skull } from 'lucide-react';
 import { ViewState } from '../types';
 
 interface SidebarProps {
@@ -12,10 +12,11 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate, onLogout, userEmail }) => {
   const navItems = [
-    // { name: 'Visão Geral', icon: LayoutGrid, id: 'overview' }, // Desativado por enquanto
+    { name: 'Visão Geral', icon: LayoutGrid, id: 'overview' }, 
     { name: 'Meus Animas', icon: Crown, id: 'my-animas' },
     { name: 'Centro de Adoção', icon: Egg, id: 'adoption' },
-    { name: 'Biblioteca (Admin)', icon: Dna, id: 'library' },
+    { name: 'Biblioteca', icon: Dna, id: 'library' },
+    { name: 'Bestiário (Admin)', icon: Skull, id: 'enemies' },
     // { name: 'Configurações', icon: Settings, id: 'settings' },
   ];
 
