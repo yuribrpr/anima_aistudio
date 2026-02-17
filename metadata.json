@@ -1,0 +1,5 @@
+{
+  "name": "Nexus Cloud Dashboard",
+  "description": "Enterprise-grade dashboard inspired by Vercel, powered by Supabase and Gemini AI.",
+  "requestFramePermissions": []
+}
